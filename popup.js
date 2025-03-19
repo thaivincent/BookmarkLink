@@ -1,1 +1,3 @@
-console.log("This is a popup!")
+document.getElementById("signin").addEventListener("click", () => {
+    alert("Button clicked!");
+  });
