@@ -1,14 +1,19 @@
 {
-    "name": "Bookmark Link",
-    "description": "Collaborative Bookmark Share with real-type sync",
-    "version": "1.0",
-    "manifest_version": 3,
-    "permissions": [
-        "identity",
-        "storage"   
-    ],
-    "action": {
-      "default_popup": "hello.html",
-      "default_icon": "icon.png"
-    }
+  "manifest_version": 3,
+  "name": "Bookmark Link Extension",
+  "version": "1.0",
+  "description": "Save and manage bookmarks with Firebase email authentication",
+  "action": {
+    "default_popup": "main.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.googleapis.com/*",
+    "https://*.firebaseio.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
+}

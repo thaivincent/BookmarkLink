@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bookmark Link</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 3px;
+    }
+    input {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .auth-toggle {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
+      color: #4285F4;
+    }
+    #error {
+      color: red;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bookmark Link</h1>
+  
+  <!-- Auth UI -->
+  <div id="auth-container">
+    <div id="login-form">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+      </div>
+      <button id="loginButton">Log In</button>
+      <div class="auth-toggle" id="showSignup">Need an account? Sign up</div>
+    </div>
+    
+    <div id="signup-form" style="display: none;">
+      <div class="form-group">
+        <label for="signupEmail">Email:</label>
+        <input type="email" id="signupEmail" required>
+      </div>
+      <div class="form-group">
+        <label for="signupPassword">Password:</label>
+        <input type="password" id="signupPassword" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" required>
+      </div>
+      <button id="signupButton">Sign Up</button>
+      <div class="auth-toggle" id="showLogin">Already have an account? Log in</div>
+    </div>
+    
+    <div id="error"></div>
+  </div>
+
+  <!-- Logged-in UI -->
+  <div id="bookmarks-container" style="display: none;">
+    <h2>Your Bookmarks</h2>
+    <ul id="bookmarksList"></ul>
+    <button id="logoutButton">Log Out</button>
+  </div>
+
+  <script src="firebase.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
