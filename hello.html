@@ -1,8 +1,25 @@
 <html>
+  <title> Bookmark Link</title>
   <body>
     <h1>
         Bookmark Link</h1>
-        <button id ="signin">Sign In</button>
-        <script src="popup.js"></script>
+        <!-- Load Firebase Config -->
+        <script src="firebase.js"></script>
+      <!-- Load Firebase SDKs -->
+      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+      <!-- Load popup.js -->
+      <script src ="popup.js" type ="module"></script>
+        <!-- Auth UI -->
+      <div id="auth-container">
+      <button id="signInButton">Sign in with Google</button>
+      <div id="error" style="color: red;"></div>
+
+          <!-- Logged-in UI (hidden by default) -->
+      <div id="bookmarks-container" style="display: none;">
+      <h2>Your Bookmarks</h2>
+      <ul id="bookmarksList"></ul>
+    </div>
   </body>
 </html>
