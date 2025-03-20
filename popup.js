@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.style.display = 'block';
     errorDiv.textContent = '';
   });
-  
+
   // Check if user is already authenticated
   chrome.storage.local.get(['userAuth'], function(result) {
     if (result.userAuth) {
@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
       errorDiv.textContent = 'Passwords do not match';
       return;
     }
+
     
     // Firebase REST API for email/password sign up
     fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`, {
@@ -131,13 +132,39 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       
       chrome.storage.local.set({ userAuth: authData }, function() {
+        createUserProfile(authData)
         showBookmarks(authData);
+        
       });
     })
     .catch(error => {
       errorDiv.textContent = `Signup failed: ${error.message}`;
     });
   });
+
+  // Function to create user in Firestore
+  function createUserProfile(authData) {
+    // Create a document in the "users" collection
+    fetch(`https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/users/${authData.localId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authData.idToken}`
+      },
+      body: JSON.stringify({
+        fields: {
+          email: { stringValue: authData.email },
+          createdAt: { timestampValue: new Date().toISOString() },
+          userID: { stringValue: authData.localId },
+          bookmarks: { arrayValue: { values: [] } },
+          sharedWith: { arrayValue: { values: [] } }
+        }
+      })
+    })
+    .then(response => response.json())
+    .then(data => console.log('User profile created in Firestore:', data))
+    .catch(error => console.error('Error creating user profile:', error));
+  }
   
   // Handle Logout
   logoutButton.addEventListener('click', function() {

@@ -4,7 +4,8 @@
   "version": "1.0",
   "description": "Save and manage bookmarks with Firebase email authentication",
   "action": {
-    "default_popup": "main.html"
+    "default_popup": "main.html",
+    "default_icon": "icon.png"
   },
   "permissions": [
     "storage"
@@ -16,4 +17,4 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   }
-}
+} 
