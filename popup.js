@@ -142,26 +142,73 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Function to create user in Firestore
   function createUserProfile(authData) {
+    // Debug: Log what we're getting in authData
+    console.log("Auth data received:", JSON.stringify(authData, null, 2));
+    
+    // Let's explicitly log what we're looking for
+    console.log("ID fields:", {
+      localId: authData.localId,
+      uid: authData.uid
+    });
+    
+    // Set a definite user ID - use a timestamp if nothing else is available
+    const userId = authData.localId || authData.uid || `user_${Date.now()}`;
+    console.log("Using userId:", userId);
+    
+    // Create valid fields object with proper Firestore typing
+    const fieldsObject = {
+      email: { stringValue: authData.email || "unknown@example.com" },
+      createdAt: { timestampValue: new Date().toISOString() },
+      userID: { stringValue: userId }
+    };
+    
+    // Add arrays only if they are supported
+    if (authData.bookmarks) {
+      fieldsObject.bookmarks = { 
+        arrayValue: { 
+          values: authData.bookmarks.map(b => ({ stringValue: b })) 
+        } 
+      };
+    } else {
+      fieldsObject.bookmarks = { arrayValue: { values: [] } };
+    }
+    
+    if (authData.sharedWith) {
+      fieldsObject.sharedWith = { 
+        arrayValue: { 
+          values: authData.sharedWith.map(s => ({ stringValue: s })) 
+        } 
+      };
+    } else {
+      fieldsObject.sharedWith = { arrayValue: { values: [] } };
+    }
+    
+    // Log request payload for debugging
+    const requestBody = {
+      fields: fieldsObject
+    };
+    console.log("Request body:", JSON.stringify(requestBody, null, 2));
+    
     // Create a document in the "users" collection
-    fetch(`https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/users/${authData.localId}`, {
-      method: 'POST',
+    fetch(`https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/users/${userId}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authData.idToken}`
       },
-      body: JSON.stringify({
-        fields: {
-          email: { stringValue: authData.email },
-          createdAt: { timestampValue: new Date().toISOString() },
-          userID: { stringValue: authData.localId },
-          bookmarks: { arrayValue: { values: [] } },
-          sharedWith: { arrayValue: { values: [] } }
-        }
-      })
+      body: JSON.stringify(requestBody)
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("Response status:", response.status);
+      if (!response.ok) {
+        return response.text().then(text => {
+          console.log("Error response:", text);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        });
+      }
+      return response.json();
+    })
     .then(data => console.log('User profile created in Firestore:', data))
     .catch(error => console.error('Error creating user profile:', error));
   }
